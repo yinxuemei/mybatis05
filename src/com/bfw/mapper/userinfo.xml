@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bfw.mapper.UserInfoMapper">
+
+	<resultMap type="userInfo" id="userMap">
+		<result column="user_id" property="userId"/>
+		<result column="user_name" property="username"/>
+		<result column="user_age" property="userAge"/>
+		<result column="user_sex" property="userSex"/>
+		<result column="user_brithday" property="userBrithday"/>
+	</resultMap>
+	
+	
+	
+	<!-- 查询所有用户信息 -->
+	<select id="getAlluser" resultMap="userMap" parameterType="java.lang.String" >
+		select * from user_info  
+		<if test="username != null">
+			where	user_name like #{username}		
+		</if>
+	</select>
+	
+	<!-- 查询所有用户信息 -->
+	<select id="getAlluser1" resultMap="userMap" parameterType="userInfo" >
+		select * from user_info  where 1=1 
+		<if test="userId != null">
+			and	user_id = #{userId}		
+		</if>
+		<if test="username != null">
+			and	user_name like #{username}		
+		</if>
+	</select>
+	
+	
+	<!-- 查询所有用户信息 choose when otherwise-->
+	<select id="getAlluser2" resultMap="userMap" parameterType="userInfo" >
+		select * from user_info  where 1=1 
+		
+		<choose>
+			<when test="userId != null">
+				and	user_id = #{userId}	
+			</when>
+			<when test="username != null">
+				and	user_name like #{username}	
+			</when>
+			<otherwise>
+				and user_sex ='男'
+			</otherwise>
+		</choose>
+
+	</select>
+	
+		
+	<!-- 查询所有用户信息 -->
+	<select id="getAlluser3" resultMap="userMap" parameterType="userInfo" >
+		select * from user_info  
+		<where>
+			<if test="userId != null">
+				and	user_id = #{userId}		
+			</if>
+			<if test="username != null">
+				and	user_name like #{username}		
+			</if>
+		</where>
+	</select>
+	
+			
+	<!-- 查询所有用户信息 -->
+	<select id="getAlluser4" resultMap="userMap" parameterType="userInfo" >
+		select * from user_info  
+		<trim prefix="WHERE" prefixOverrides="AND |OR ">
+			<if test="userId != null">
+					user_id = #{userId}		
+			</if>
+			<if test="username != null">
+				and	user_name like #{username}		
+			</if>
+		</trim>
+	</select>
+	
+	
+	<update id="updateUser" parameterType="userInfo" >
+		update user_info
+		<set>
+			<if test="username!=null"> user_name=#{username},</if>
+			<if test="userAge!=null"> user_age=#{userAge},</if>
+		</set>
+		where user_id = #{userId}
+	</update>
+	
+</mapper>
